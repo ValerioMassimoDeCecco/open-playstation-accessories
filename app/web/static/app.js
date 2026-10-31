@@ -97,8 +97,10 @@ function updateStatusUI(data) {
       const rgbStr = `rgb(${lb.r}, ${lb.g}, ${lb.b})`;
       const svgLb = document.getElementById("svgLightbar");
       if (svgLb) {
-        svgLb.style.stroke = rgbStr;
-        svgLb.style.filter = `drop-shadow(0 0 12px ${rgbStr})`;
+        svgLb.style.fill = rgbStr;
+        svgLb.style.filter = `drop-shadow(0 0 14px ${rgbStr})`;
+        const glowPaths = svgLb.querySelectorAll("path");
+        glowPaths.forEach((p) => { p.style.fill = rgbStr; });
       }
     }
   } else {
@@ -117,7 +119,7 @@ function updateStatusUI(data) {
 
     const svgLb = document.getElementById("svgLightbar");
     if (svgLb) {
-      svgLb.style.stroke = "#262e42";
+      svgLb.style.fill = "#1a2430";
       svgLb.style.filter = "none";
     }
   }
@@ -157,8 +159,8 @@ function renderInputs(data) {
   // 1. Thumbsticks SVG transform
   const stickL = document.getElementById("svgStickLeft");
   const stickR = document.getElementById("svgStickRight");
-  if (stickL) stickL.style.transform = `translate(${lx * 18}px, ${-ly * 18}px)`;
-  if (stickR) stickR.style.transform = `translate(${rx * 18}px, ${-ry * 18}px)`;
+  if (stickL) stickL.style.transform = `translate(${lx * 26}px, ${-ly * 26}px)`;
+  if (stickR) stickR.style.transform = `translate(${rx * 26}px, ${-ry * 26}px)`;
 
   // 2. Sticks Canvas Radars
   drawStickRadar("canvasLeftStick", lx, ly, currentProfile?.left_stick?.deadzone || 2);
