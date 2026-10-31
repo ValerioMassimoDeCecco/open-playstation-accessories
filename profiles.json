@@ -1,0 +1,151 @@
+{
+  "profiles": [
+    {
+      "id": "default",
+      "name": "Standard / Predefinito",
+      "description": "Risposta lineare standard 1:1, ideale per giochi d'avventura e uso generale.",
+      "curve_type": "Linear",
+      "left_stick": {
+        "curve": "Linear",
+        "deadzone": 2,
+        "anti_deadzone": 0,
+        "max_threshold": 100
+      },
+      "right_stick": {
+        "curve": "Linear",
+        "deadzone": 2,
+        "anti_deadzone": 0,
+        "max_threshold": 100
+      },
+      "triggers": {
+        "l2_deadzone": 0,
+        "l2_threshold": 100,
+        "r2_deadzone": 0,
+        "r2_threshold": 100
+      },
+      "vibration_intensity": 100,
+      "trigger_effect_intensity": 100,
+      "lightbar": {
+        "r": 0,
+        "g": 112,
+        "b": 240
+      },
+      "button_mappings": {
+        "back_left": "cross",
+        "back_right": "square"
+      }
+    },
+    {
+      "id": "fps_competitive",
+      "name": "FPS Competitivo (Rapido / Hair Trigger)",
+      "description": "Ottimizzato per shooter (CoD, Apex, Warzone). Grilletti istantanei e curva rapida.",
+      "curve_type": "Quick",
+      "left_stick": {
+        "curve": "Quick",
+        "deadzone": 1,
+        "anti_deadzone": 5,
+        "max_threshold": 95
+      },
+      "right_stick": {
+        "curve": "Precise",
+        "deadzone": 1,
+        "anti_deadzone": 3,
+        "max_threshold": 98
+      },
+      "triggers": {
+        "l2_deadzone": 0,
+        "l2_threshold": 15,
+        "r2_deadzone": 0,
+        "r2_threshold": 10
+      },
+      "vibration_intensity": 50,
+      "trigger_effect_intensity": 0,
+      "lightbar": {
+        "r": 255,
+        "g": 30,
+        "b": 30
+      },
+      "button_mappings": {
+        "back_left": "cross",
+        "back_right": "circle"
+      }
+    },
+    {
+      "id": "sniper_precise",
+      "name": "Precisione / Cecchino (Preciso)",
+      "description": "Bassa sensibilità nei movimenti minimi per micro-correzioni e mira a lungo raggio.",
+      "curve_type": "Precise",
+      "left_stick": {
+        "curve": "Linear",
+        "deadzone": 3,
+        "anti_deadzone": 0,
+        "max_threshold": 100
+      },
+      "right_stick": {
+        "curve": "Precise",
+        "deadzone": 2,
+        "anti_deadzone": 0,
+        "max_threshold": 100
+      },
+      "triggers": {
+        "l2_deadzone": 5,
+        "l2_threshold": 90,
+        "r2_deadzone": 5,
+        "r2_threshold": 80
+      },
+      "vibration_intensity": 75,
+      "trigger_effect_intensity": 50,
+      "lightbar": {
+        "r": 0,
+        "g": 230,
+        "b": 180
+      },
+      "button_mappings": {
+        "back_left": "l3",
+        "back_right": "r3"
+      }
+    },
+    {
+      "id": "racing_smooth",
+      "name": "Sim Racing & Guida",
+      "description": "Curva costante per sterzate fluide e progressione completa della corsa dei grilletti.",
+      "curve_type": "Steady",
+      "left_stick": {
+        "curve": "Steady",
+        "deadzone": 3,
+        "anti_deadzone": 0,
+        "max_threshold": 100
+      },
+      "right_stick": {
+        "curve": "Linear",
+        "deadzone": 5,
+        "anti_deadzone": 0,
+        "max_threshold": 100
+      },
+      "triggers": {
+        "l2_deadzone": 0,
+        "l2_threshold": 100,
+        "r2_deadzone": 0,
+        "r2_threshold": 100
+      },
+      "vibration_intensity": 100,
+      "trigger_effect_intensity": 100,
+      "lightbar": {
+        "r": 255,
+        "g": 140,
+        "b": 0
+      },
+      "button_mappings": {
+        "back_left": "l1",
+        "back_right": "r1"
+      }
+    }
+  ],
+  "slots": {
+    "slot_1": "default",
+    "slot_2": "fps_competitive",
+    "slot_3": "sniper_precise",
+    "slot_4": "racing_smooth"
+  },
+  "active_slot": "slot_1"
+}

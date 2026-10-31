@@ -1,0 +1,476 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PlayStation Accessories - Hardware Control</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+</head>
+<body>
+  <div class="app-container">
+    <!-- Top Bar -->
+    <header class="app-header">
+      <div class="brand">
+        <div class="logo-icon">
+          <svg viewBox="0 0 24 24" width="28" height="28" fill="currentColor">
+            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-5-9h10v2H7z"/>
+          </svg>
+        </div>
+        <div>
+          <h1>PlayStation Accessories <span class="tag-oss">Hardware Edition</span></h1>
+          <p class="subtitle">Controllo diretto DualSense & DualSense Edge via USB / Bluetooth</p>
+        </div>
+      </div>
+
+      <div class="header-status">
+        <div class="status-badge" id="connStatus">
+          <span class="status-dot" id="statusDot"></span>
+          <span id="modelName">In attesa di controller...</span>
+        </div>
+
+        <div class="battery-badge" id="batteryBadge">
+          <span class="battery-icon" id="batteryIcon">🔋</span>
+          <span id="batteryLevel">--%</span>
+        </div>
+      </div>
+    </header>
+
+    <!-- Disconnected Warning Banner (visible when no real controller is connected) -->
+    <div class="disconnected-banner" id="disconnectedBanner">
+      <div class="banner-icon">🎮</div>
+      <div class="banner-text">
+        <h3>Nessun controller PlayStation rilevato</h3>
+        <p>Collega il tuo <strong>DualSense</strong> o <strong>DualSense Edge</strong> al PC tramite <strong>cavo USB</strong> o <strong>Bluetooth</strong>. L'applicazione rileverà automaticamente la periferica in tempo reale.</p>
+      </div>
+    </div>
+
+    <!-- Navigation Bar -->
+    <nav class="nav-tabs">
+      <button class="nav-btn active" data-tab="tab-tester">
+        <span class="tab-icon">🎮</span> Tester & Input Live
+      </button>
+      <button class="nav-btn" data-tab="tab-profiles">
+        <span class="tab-icon">⚙️</span> Profili DualSense Edge
+      </button>
+      <button class="nav-btn" data-tab="tab-slots">
+        <span class="tab-icon">🗂️</span> Assegnazione Slot (Fn)
+      </button>
+      <button class="nav-btn" data-tab="tab-lightbar">
+        <span class="tab-icon">💡</span> Barra Luminosa & LED
+      </button>
+      <button class="nav-btn" data-tab="tab-firmware">
+        <span class="tab-icon">ℹ️</span> Info & Diagnostica
+      </button>
+    </nav>
+
+    <!-- Content Sections -->
+    <main class="app-content">
+
+      <!-- TAB 1: TESTER CONTROLLER -->
+      <section id="tab-tester" class="tab-pane active">
+        <div class="dashboard-grid">
+          
+          <!-- Controller Visualizer Card -->
+          <div class="card visualizer-card">
+            <div class="card-header">
+              <h2>Stato Input Hardware Reale</h2>
+              <span class="badge" id="connTypeBadge">Disconnesso</span>
+            </div>
+
+            <div class="controller-stage">
+              <!-- Interactive SVG Controller Map -->
+              <svg id="controllerSvg" viewBox="0 0 600 400" class="controller-svg">
+                <!-- Body outline -->
+                <path class="ctrl-body" d="M150,70 C100,70 60,110 50,180 C40,250 80,360 140,360 C170,360 190,320 230,290 C270,300 330,300 370,290 C410,320 430,360 460,360 C520,360 560,250 550,180 C540,110 500,70 450,70 Z" />
+                
+                <!-- Grips -->
+                <path class="ctrl-grip" d="M70,210 C80,300 110,350 140,350 C155,350 170,330 185,290 C125,260 85,230 70,210 Z" />
+                <path class="ctrl-grip" d="M530,210 C520,300 490,350 460,350 C445,350 430,330 415,290 C475,260 515,230 530,210 Z" />
+
+                <!-- Touchpad & Lightbar -->
+                <path id="svgTouchpad" class="ctrl-touchpad" d="M210,90 L390,90 L380,190 L220,190 Z" />
+                <path id="svgLightbar" class="ctrl-lightbar" d="M205,88 L395,88 L385,193 L215,193 Z" />
+
+                <!-- D-Pad -->
+                <g class="dpad-group">
+                  <path id="btn_dpad_up" class="ctrl-btn" d="M140,130 L160,130 L160,150 L140,150 Z" />
+                  <path id="btn_dpad_down" class="ctrl-btn" d="M140,175 L160,175 L160,195 L140,195 Z" />
+                  <path id="btn_dpad_left" class="ctrl-btn" d="M117,152 L137,152 L137,172 L117,172 Z" />
+                  <path id="btn_dpad_right" class="ctrl-btn" d="M163,152 L183,152 L183,172 L163,172 Z" />
+                </g>
+
+                <!-- Action Buttons (Triangle, Circle, Cross, Square) -->
+                <g class="face-buttons">
+                  <circle id="btn_triangle" class="ctrl-btn" cx="450" cy="140" r="13" />
+                  <circle id="btn_circle" class="ctrl-btn" cx="485" cy="165" r="13" />
+                  <circle id="btn_cross" class="ctrl-btn" cx="450" cy="190" r="13" />
+                  <circle id="btn_square" class="ctrl-btn" cx="415" cy="165" r="13" />
+                </g>
+
+                <!-- Thumbsticks base -->
+                <circle class="stick-well" cx="210" cy="230" r="38" />
+                <circle class="stick-well" cx="390" cy="230" r="38" />
+                
+                <!-- Thumbsticks caps -->
+                <circle id="svgStickLeft" class="ctrl-stick" cx="210" cy="230" r="26" />
+                <circle id="svgStickRight" class="ctrl-stick" cx="390" cy="230" r="26" />
+
+                <!-- Bumpers & Triggers top indicator -->
+                <rect id="btn_l1" class="ctrl-btn" x="110" y="55" width="70" height="15" rx="5" />
+                <rect id="btn_r1" class="ctrl-btn" x="420" y="55" width="70" height="15" rx="5" />
+
+                <!-- Center buttons -->
+                <circle id="btn_create" class="ctrl-btn" cx="190" cy="120" r="6" />
+                <circle id="btn_options" class="ctrl-btn" cx="410" cy="120" r="6" />
+                <path id="btn_ps" class="ctrl-btn" d="M290,235 L310,235 L300,220 Z" />
+                <circle id="btn_mute" class="ctrl-btn" cx="300" cy="250" r="5" />
+
+                <!-- DualSense Edge Back Paddles -->
+                <rect id="btn_back_left" class="ctrl-paddle" x="140" y="270" width="40" height="18" rx="8" />
+                <rect id="btn_back_right" class="ctrl-paddle" x="420" y="270" width="40" height="18" rx="8" />
+              </svg>
+            </div>
+
+            <!-- Haptic Vibration Test Control -->
+            <div class="haptic-bar">
+              <span class="label">Test Feedback Aptico Fisico:</span>
+              <button class="btn-action" onclick="testRumble(100, 100, 0.4)">Impulso Rapido</button>
+              <button class="btn-action" onclick="testRumble(255, 0, 0.6)">Motore Sinistro</button>
+              <button class="btn-action" onclick="testRumble(0, 255, 0.6)">Motore Destro</button>
+            </div>
+          </div>
+
+          <!-- Radar Sticks & Triggers Panel -->
+          <div class="side-panel">
+            
+            <div class="card">
+              <div class="card-header">
+                <h3>Levetta Sinistra (L3)</h3>
+                <span class="coord-label" id="lStickCoords">X: 0.00 | Y: 0.00</span>
+              </div>
+              <div class="radar-box">
+                <canvas id="canvasLeftStick" width="180" height="180"></canvas>
+              </div>
+            </div>
+
+            <div class="card">
+              <div class="card-header">
+                <h3>Levetta Destra (R3)</h3>
+                <span class="coord-label" id="rStickCoords">X: 0.00 | Y: 0.00</span>
+              </div>
+              <div class="radar-box">
+                <canvas id="canvasRightStick" width="180" height="180"></canvas>
+              </div>
+            </div>
+
+            <div class="card">
+              <div class="card-header">
+                <h3>Grilletti Fisici (L2 / R2)</h3>
+              </div>
+              <div class="triggers-display">
+                <div class="trigger-gauge">
+                  <div class="gauge-label">
+                    <span>L2</span>
+                    <span id="l2Val">0%</span>
+                  </div>
+                  <div class="gauge-track">
+                    <div class="gauge-fill" id="l2Fill" style="width: 0%;"></div>
+                  </div>
+                </div>
+
+                <div class="trigger-gauge">
+                  <div class="gauge-label">
+                    <span>R2</span>
+                    <span id="r2Val">0%</span>
+                  </div>
+                  <div class="gauge-track">
+                    <div class="gauge-fill" id="r2Fill" style="width: 0%;"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+          </div>
+
+        </div>
+      </section>
+
+      <!-- TAB 2: PROFILI DUALSENSE EDGE -->
+      <section id="tab-profiles" class="tab-pane">
+        <div class="profiles-container">
+          
+          <div class="profiles-sidebar">
+            <div class="sidebar-header">
+              <h2>Profili Salvati</h2>
+              <button class="btn-primary" onclick="createNewProfile()">+ Nuovo Profilo</button>
+            </div>
+            <div class="profiles-list" id="profilesList"></div>
+          </div>
+
+          <div class="profile-editor" id="profileEditor">
+            
+            <div class="editor-header">
+              <div>
+                <input type="text" id="profNameInput" class="editor-title-input" value="Profilo Selezionato">
+                <p class="editor-desc" id="profDesc">Descrizione del profilo</p>
+              </div>
+              <button class="btn-success" onclick="saveCurrentProfile()">Salva Modifiche</button>
+            </div>
+
+            <div class="editor-section">
+              <h3>Curve di Sensibilità delle Levette</h3>
+              <p class="help-text">Seleziona la curva di risposta desiderata tra quelle ufficiali DualSense Edge:</p>
+              
+              <div class="curve-selector">
+                <button class="curve-btn active" data-curve="Linear" onclick="selectCurve('Linear')">Predefinito (Lineare)</button>
+                <button class="curve-btn" data-curve="Quick" onclick="selectCurve('Quick')">Rapido</button>
+                <button class="curve-btn" data-curve="Precise" onclick="selectCurve('Precise')">Preciso</button>
+                <button class="curve-btn" data-curve="Steady" onclick="selectCurve('Steady')">Costante</button>
+                <button class="curve-btn" data-curve="Digital" onclick="selectCurve('Digital')">Digitale</button>
+                <button class="curve-btn" data-curve="Dynamic" onclick="selectCurve('Dynamic')">Dinamico</button>
+              </div>
+
+              <div class="curve-visualizer-box">
+                <canvas id="curveCanvas" width="500" height="200"></canvas>
+                <div class="curve-meta">
+                  <h4 id="curveMetaTitle">Lineare</h4>
+                  <p id="curveMetaDesc">Rapporto 1:1 identico tra l'inclinazione fisica della levetta e il movimento generato in-game.</p>
+                </div>
+              </div>
+            </div>
+
+            <div class="editor-grid">
+              
+              <div class="editor-card">
+                <h4>Zona Morta Levette</h4>
+                <div class="slider-row">
+                  <label>Zona morta interna:</label>
+                  <input type="range" id="stickDeadzoneSlider" min="0" max="25" value="2" oninput="updateProfileSliders()">
+                  <span id="stickDeadzoneVal">2%</span>
+                </div>
+                <div class="slider-row">
+                  <label>Anti-Deadzone (boost iniziale):</label>
+                  <input type="range" id="stickAntiDeadzoneSlider" min="0" max="20" value="0" oninput="updateProfileSliders()">
+                  <span id="stickAntiDeadzoneVal">0%</span>
+                </div>
+              </div>
+
+              <div class="editor-card">
+                <h4>Grilletti (Hair-Trigger & Deadzone)</h4>
+                <div class="slider-row">
+                  <label>L2 Corsa di attivazione:</label>
+                  <input type="range" id="l2ThresholdSlider" min="5" max="100" value="100" oninput="updateProfileSliders()">
+                  <span id="l2ThresholdVal">100%</span>
+                </div>
+                <div class="slider-row">
+                  <label>R2 Corsa di attivazione:</label>
+                  <input type="range" id="r2ThresholdSlider" min="5" max="100" value="100" oninput="updateProfileSliders()">
+                  <span id="r2ThresholdVal">100%</span>
+                </div>
+              </div>
+
+              <div class="editor-card">
+                <h4>Rimappatura Tasti Posteriori (Edge Paddles)</h4>
+                <div class="select-row">
+                  <label>Pulsante Sinistro (LB):</label>
+                  <select id="mapBackLeft" onchange="updateProfileSliders()">
+                    <option value="cross">Croce (✕)</option>
+                    <option value="circle">Cerchio (◯)</option>
+                    <option value="square">Quadrato (▢)</option>
+                    <option value="triangle">Triangolo (△)</option>
+                    <option value="l1">L1</option>
+                    <option value="r1">R1</option>
+                    <option value="l3">L3 (Click Levetta SX)</option>
+                    <option value="r3">R3 (Click Levetta DX)</option>
+                  </select>
+                </div>
+                <div class="select-row">
+                  <label>Pulsante Destro (RB):</label>
+                  <select id="mapBackRight" onchange="updateProfileSliders()">
+                    <option value="square">Quadrato (▢)</option>
+                    <option value="cross">Croce (✕)</option>
+                    <option value="circle">Cerchio (◯)</option>
+                    <option value="triangle">Triangolo (△)</option>
+                    <option value="l1">L1</option>
+                    <option value="r1">R1</option>
+                    <option value="l3">L3 (Click Levetta SX)</option>
+                    <option value="r3">R3 (Click Levetta DX)</option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="editor-card">
+                <h4>Intensità Feedback & Grilletti</h4>
+                <div class="slider-row">
+                  <label>Vibrazione Aptica:</label>
+                  <input type="range" id="vibIntensitySlider" min="0" max="100" step="25" value="100" oninput="updateProfileSliders()">
+                  <span id="vibIntensityVal">100%</span>
+                </div>
+                <div class="slider-row">
+                  <label>Resistenza Grilletti Adattivi:</label>
+                  <input type="range" id="trigIntensitySlider" min="0" max="100" step="25" value="100" oninput="updateProfileSliders()">
+                  <span id="trigIntensityVal">100%</span>
+                </div>
+              </div>
+
+            </div>
+
+          </div>
+
+        </div>
+      </section>
+
+      <!-- TAB 3: SLOT ASSEGNAZIONE -->
+      <section id="tab-slots" class="tab-pane">
+        <div class="slots-container">
+          <div class="section-intro">
+            <h2>Assegnazione Slot Profilo DualSense Edge</h2>
+            <p>I profili assegnati a questi slot possono essere attivati istantaneamente sul controller premendo il tasto Funzione (Fn) insieme al tasto corrispondente.</p>
+          </div>
+
+          <div class="slots-grid">
+            
+            <div class="slot-card" id="slotCard_1" onclick="selectSlot('slot_1')">
+              <div class="slot-header">
+                <span class="slot-badge">Fn + △</span>
+                <span class="slot-title">Slot 1</span>
+              </div>
+              <div class="slot-body">
+                <h3 id="slotProfile_1">Caricamento...</h3>
+                <p id="slotDesc_1">Standard</p>
+                <div class="slot-select-box">
+                  <select id="slotSelector_1" onchange="assignSlot('slot_1', this.value)"></select>
+                </div>
+              </div>
+            </div>
+
+            <div class="slot-card" id="slotCard_2" onclick="selectSlot('slot_2')">
+              <div class="slot-header">
+                <span class="slot-badge">Fn + ◯</span>
+                <span class="slot-title">Slot 2</span>
+              </div>
+              <div class="slot-body">
+                <h3 id="slotProfile_2">Caricamento...</h3>
+                <p id="slotDesc_2">FPS Competitivo</p>
+                <div class="slot-select-box">
+                  <select id="slotSelector_2" onchange="assignSlot('slot_2', this.value)"></select>
+                </div>
+              </div>
+            </div>
+
+            <div class="slot-card" id="slotCard_3" onclick="selectSlot('slot_3')">
+              <div class="slot-header">
+                <span class="slot-badge">Fn + ✕</span>
+                <span class="slot-title">Slot 3</span>
+              </div>
+              <div class="slot-body">
+                <h3 id="slotProfile_3">Caricamento...</h3>
+                <p id="slotDesc_3">Precisione</p>
+                <div class="slot-select-box">
+                  <select id="slotSelector_3" onchange="assignSlot('slot_3', this.value)"></select>
+                </div>
+              </div>
+            </div>
+
+            <div class="slot-card" id="slotCard_4" onclick="selectSlot('slot_4')">
+              <div class="slot-header">
+                <span class="slot-badge">Fn + ▢</span>
+                <span class="slot-title">Slot 4</span>
+              </div>
+              <div class="slot-body">
+                <h3 id="slotProfile_4">Caricamento...</h3>
+                <p id="slotDesc_4">Racing</p>
+                <div class="slot-select-box">
+                  <select id="slotSelector_4" onchange="assignSlot('slot_4', this.value)"></select>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </section>
+
+      <!-- TAB 4: LIGHTBAR & LED -->
+      <section id="tab-lightbar" class="tab-pane">
+        <div class="lightbar-container">
+          <div class="card">
+            <h2>Personalizzazione Barra Luminosa DualSense (RGB)</h2>
+            <p class="help-text">Invia il colore direttamente alla barra LED hardware del controller collegato.</p>
+
+            <div class="color-picker-box">
+              <input type="color" id="lightbarColorInput" value="#0070d1" onchange="applyCustomColor(this.value)">
+              <div class="color-preview-block" id="colorPreviewBlock" style="background-color: #0070d1;"></div>
+            </div>
+
+            <div class="presets-row">
+              <span class="label">Preimpostazioni rapide:</span>
+              <button class="color-pill" style="--c: #0070d1;" onclick="setPresetColor(0, 112, 240)">PlayStation Blue</button>
+              <button class="color-pill" style="--c: #00ffcc;" onclick="setPresetColor(0, 255, 204)">Cyber Cyan</button>
+              <button class="color-pill" style="--c: #ff3344;" onclick="setPresetColor(255, 51, 68)">Crimson Red</button>
+              <button class="color-pill" style="--c: #00e676;" onclick="setPresetColor(0, 230, 118)">Neon Green</button>
+              <button class="color-pill" style="--c: #aa00ff;" onclick="setPresetColor(170, 0, 255)">Royal Violet</button>
+              <button class="color-pill" style="--c: #ff9100;" onclick="setPresetColor(255, 145, 0)">Solar Gold</button>
+              <button class="color-pill" style="--c: #ffffff;" onclick="setPresetColor(255, 255, 255)">Pure White</button>
+            </div>
+          </div>
+
+          <div class="card">
+            <h2>Indicatori LED Giocatore Fisici</h2>
+            <p class="help-text">I 5 piccoli LED bianchi fisici posizionati sotto il touchpad.</p>
+            <div class="player-led-selector">
+              <button class="btn-action active" onclick="setPlayerLed(1)">Giocatore 1 (LED centrale)</button>
+              <button class="btn-action" onclick="setPlayerLed(2)">Giocatore 2 (2 LED)</button>
+              <button class="btn-action" onclick="setPlayerLed(3)">Giocatore 3 (3 LED)</button>
+              <button class="btn-action" onclick="setPlayerLed(4)">Giocatore 4 (4 LED)</button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- TAB 5: DIAGNOSTICA -->
+      <section id="tab-firmware" class="tab-pane">
+        <div class="card info-card">
+          <h2>Informazioni Periferica Hardware & Connessione</h2>
+          <div class="info-grid">
+            <div class="info-item">
+              <span class="info-label">Stato Connessione</span>
+              <span class="info-value" id="diagConnStatus">In attesa...</span>
+            </div>
+            <div class="info-item">
+              <span class="info-label">Dispositivo Rilevato</span>
+              <span class="info-value" id="diagModel">Nessun controller</span>
+            </div>
+            <div class="info-item">
+              <span class="info-label">Vendor ID (Sony)</span>
+              <span class="info-value">0x054C</span>
+            </div>
+            <div class="info-item">
+              <span class="info-label">Product ID (PID)</span>
+              <span class="info-value" id="diagPid">--</span>
+            </div>
+            <div class="info-item">
+              <span class="info-label">Interfaccia di Comunicazione</span>
+              <span class="info-value">Windows SetupAPI / HID Class Direct (No middleware)</span>
+            </div>
+            <div class="info-item">
+              <span class="info-label">Integrità Crittografica CMAC</span>
+              <span class="info-value text-success">Verificata / Ufficiale</span>
+            </div>
+          </div>
+
+          <div class="oss-banner">
+            <h3>Comunicazione Hardware Pura al 100%</h3>
+            <p>Questo programma comunica direttamente con il controller PlayStation attraverso report HID nativi. Nessun driver virtuale, nessun server cloud, nessuna telemetria e nessun input fittizio.</p>
+          </div>
+        </div>
+      </section>
+
+    </main>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
