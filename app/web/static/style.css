@@ -126,18 +126,33 @@ body {
 }
 .controller-svg:hover { transform: scale(1.02); }
 
-/* Controller SVG Elements V2 (Fedele all'Originale) */
-.ctrl-body-white { fill: url(#bodyGradV2); stroke: #444; stroke-width: 2; transition: fill 0.4s; }
-.ctrl-grip-black { fill: url(#gripGradV2); stroke: #222; stroke-width: 2; }
-.ctrl-touchpad-v2 { fill: #0a0a0a; stroke: #333; stroke-width: 2; opacity: 0.9; }
-.ctrl-lightbar-v2 { fill: none; stroke: var(--ps-blue); stroke-width: 6; stroke-linecap: round; filter: drop-shadow(0 0 18px var(--ps-blue-glow)); transition: stroke 0.4s, filter 0.4s; }
-.ctrl-btn-v2 { fill: url(#btnGradV2); stroke: #444; stroke-width: 2; transition: all 0.1s ease; cursor: pointer; }
-.ctrl-btn-v2:hover { stroke: var(--cyan-accent); }
-.ctrl-btn-v2.pressed { fill: var(--cyan-accent) !important; stroke: #fff !important; filter: drop-shadow(0 0 20px var(--cyan-accent)); }
-.stick-well-v2 { fill: #050505; stroke: #222; stroke-width: 3; }
-.ctrl-stick-v2 { fill: #1a1a1a; stroke: #333; stroke-width: 3; transition: transform 0.05s ease-out; }
-.ctrl-paddle-v2 { fill: #111; stroke: #333; stroke-width: 2; transition: all 0.1s; }
-.ctrl-paddle-v2.pressed { fill: var(--cyan-accent); filter: drop-shadow(0 0 15px var(--cyan-accent)); }
+/* ===== Controller SVG (DualSense Edge) ===== */
+.controller-svg {
+  width: 100%; max-width: 760px; height: auto;
+  filter: drop-shadow(0 24px 60px rgba(0, 0, 0, 0.85));
+  transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  overflow: visible;
+}
+.controller-svg:hover { transform: scale(1.015); }
+
+.controller-svg .ctrl-key,
+.controller-svg .ctrl-paddle {
+  cursor: pointer;
+  transition: filter 0.12s ease, opacity 0.12s ease;
+  transform-box: fill-box;
+  transform-origin: center;
+}
+.controller-svg .ctrl-stick {
+  transition: transform 0.06s linear;
+  transform-box: fill-box;
+  transform-origin: center;
+}
+.controller-svg .ctrl-key:hover { filter: brightness(1.35); }
+.controller-svg .ctrl-key.pressed,
+.controller-svg .ctrl-paddle.pressed {
+  filter: brightness(2.1) drop-shadow(0 0 10px var(--cyan-accent));
+}
+.controller-svg .ctrl-stick.pressed { filter: brightness(1.6); }
 
 .haptic-bar { display: flex; align-items: center; gap: 15px; padding-top: 20px; border-top: 1px solid var(--border-color); }
 .haptic-bar .label { font-size: 14px; color: var(--text-secondary); font-weight: 700; }

@@ -85,3 +85,6 @@ PlayStationAccessories/
 
 ## ⚖️ Licenza
 Distribuito sotto licenza **MIT**. Libero per uso, modifica e distribuzione.
+
+### Crediti
+- Il tracciato vettoriale del controller **DualSense Edge** (silhouette, scocca, tasti, levette, lightbar e paddle) è derivato dal progetto [daidr/dualsense-tester](https://github.com/daidr/dualsense-tester), distribuito sotto licenza **MIT**. I colori, i gradienti, le ombreggiature e le texture sono stati ridisegnati per questa applicazione.
