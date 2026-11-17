@@ -6,6 +6,7 @@ button remappings (including Edge back paddles), and slot assignments.
 
 import json
 import os
+import threading
 from typing import Dict, Any, List, Optional
 
 DEFAULT_PROFILES = [
@@ -140,7 +141,9 @@ class ProfileManager:
     """Manages saving, loading, editing and slot assignment for controller profiles."""
 
     def __init__(self, storage_path: str):
-        self.storage_path = storage_path
+        self.storage_path = os.path.abspath(os.path.expanduser(storage_path))
+        self._save_lock = threading.RLock()
+        self.last_save_error: Optional[str] = None
         self.profiles: List[Dict[str, Any]] = []
         self.slots: Dict[str, Optional[str]] = {
             "slot_1": "default",
@@ -156,23 +159,47 @@ class ProfileManager:
             try:
                 with open(self.storage_path, "r", encoding="utf-8") as f:
                     data = json.load(f)
-                    self.profiles = data.get("profiles", DEFAULT_PROFILES)
-                    self.slots = data.get("slots", self.slots)
-                    self.active_slot = data.get("active_slot", "slot_1")
+                profiles = data.get("profiles")
+                if isinstance(profiles, list) and profiles:
+                    self.profiles = profiles
+                    slots = data.get("slots")
+                    if isinstance(slots, dict):
+                        self.slots = slots
+                    active = data.get("active_slot")
+                    if isinstance(active, str) and active in self.slots:
+                        self.active_slot = active
                     return
-            except Exception:
+            except (OSError, ValueError):
                 pass
         self.profiles = [dict(p) for p in DEFAULT_PROFILES]
         self.save()
 
-    def save(self):
+    def save(self) -> bool:
+        """Writes profiles atomically; never raises (app keeps working in memory)."""
         data = {
             "profiles": self.profiles,
             "slots": self.slots,
             "active_slot": self.active_slot
         }
-        with open(self.storage_path, "w", encoding="utf-8") as f:
-            json.dump(data, f, indent=2, ensure_ascii=False)
+        with self._save_lock:
+            tmp_path = self.storage_path + ".tmp"
+            try:
+                parent = os.path.dirname(self.storage_path)
+                if parent:
+                    os.makedirs(parent, exist_ok=True)
+                with open(tmp_path, "w", encoding="utf-8") as f:
+                    json.dump(data, f, indent=2, ensure_ascii=False)
+                os.replace(tmp_path, self.storage_path)
+                self.last_save_error = None
+                return True
+            except OSError as exc:
+                self.last_save_error = str(exc)
+                try:
+                    if os.path.exists(tmp_path):
+                        os.remove(tmp_path)
+                except OSError:
+                    pass
+                return False
 
     def get_all_profiles(self) -> List[Dict[str, Any]]:
         return self.profiles

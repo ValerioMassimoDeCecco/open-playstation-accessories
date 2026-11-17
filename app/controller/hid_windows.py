@@ -1,13 +1,14 @@
 """
 Native Windows HID communication wrapper via ctypes (no external C library required).
 Explicit 64-bit types for setupapi.dll, hid.dll, and kernel32.dll.
+
+The cross-platform factory in hid_base calls ``HIDDevice`` and
+``enumerate_sony_devices``; ``HIDDevice`` is an alias of WindowsHIDDevice.
 """
 
 import ctypes
 from ctypes import wintypes
-import sys
 import threading
-import time
 from typing import List, Optional, Tuple, Dict, Any
 
 # Windows API constants
@@ -299,3 +300,6 @@ def enumerate_sony_devices() -> List[Dict[str, Any]]:
     # Sort devices so USB is prioritized over Bluetooth if both are active
     devices.sort(key=lambda d: 1 if d["is_bluetooth"] else 0)
     return devices
+
+# Generic name used by app.controller.hid_base.create_hid_device()
+HIDDevice = WindowsHIDDevice

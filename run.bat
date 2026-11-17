@@ -1,11 +1,18 @@
 @echo off
-title PlayStation Accessories - Open Source Edition
+title PlayStation Accessories - Open Source Edition V3.0
 echo =========================================================
 echo    Avvio PlayStation Accessories (Open Source Edition)
 echo =========================================================
 echo.
 
-python "%~dp0app\main.py"
+cd /d "%~dp0"
+
+where py >nul 2>nul
+if %errorlevel%==0 (
+    py -3 "%~dp0app\main.py" %*
+) else (
+    python "%~dp0app\main.py" %*
+)
 
 if errorlevel 1 (
     echo.

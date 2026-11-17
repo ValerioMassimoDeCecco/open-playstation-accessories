@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>PlayStation Accessories - Hardware Control V2.0</title>
+  <title>PlayStation Accessories - Hardware Control V3.0</title>
   <link rel="stylesheet" href="style.css">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -20,8 +20,8 @@
           </svg>
         </div>
         <div>
-          <h1>PlayStation Accessories <span class="tag-oss">Hardware Edition V2.0</span></h1>
-          <p class="subtitle">Controllo diretto DualSense & DualSense Edge via USB / Bluetooth</p>
+          <h1>PlayStation Accessories <span class="tag-oss">Hardware Edition V3.0</span></h1>
+          <p class="subtitle">Controllo diretto DualSense &amp; DualSense Edge via USB / Bluetooth &middot; Windows, macOS e Linux</p>
         </div>
       </div>
 
@@ -43,7 +43,8 @@
       <div class="banner-icon">🎮</div>
       <div class="banner-text">
         <h3>Nessun controller PlayStation rilevato</h3>
-        <p>Collega il tuo <strong>DualSense</strong> o <strong>DualSense Edge</strong> al PC tramite <strong>cavo USB</strong> o <strong>Bluetooth</strong>. L'applicazione rileverà automaticamente la periferica in tempo reale.</p>
+        <p>Collega il tuo <strong>DualSense</strong> o <strong>DualSense Edge</strong> al computer tramite <strong>cavo USB</strong> o <strong>Bluetooth</strong>. L'applicazione rileverà automaticamente la periferica in tempo reale.</p>
+        <p class="banner-hint">Su <strong>macOS</strong> concedi il permesso <strong>Monitoraggio input</strong> a Terminale in <em>Impostazioni di Sistema &rarr; Privacy e Sicurezza</em> e riavvia l'app.</p>
       </div>
     </div>
 
@@ -69,14 +70,14 @@
     <!-- Content Sections -->
     <main class="app-content">
 
-      <!-- TAB 1: TESTER CONTROLLER (V2.0 - FEDELE ALL'ORIGINALE) -->
+      <!-- TAB 1: TESTER CONTROLLER (V3.0 - FEDELE ALL'ORIGINALE) -->
       <section id="tab-tester" class="tab-pane active">
         <div class="dashboard-grid">
           
           <!-- Controller Visualizer Card -->
           <div class="card visualizer-card">
             <div class="card-header">
-              <h2>Stato Input Hardware Reale (DualSense Edge V2.0)</h2>
+              <h2>Stato Input Hardware Reale (DualSense Edge)</h2>
               <span class="badge" id="connTypeBadge">Disconnesso</span>
             </div>
 
@@ -339,12 +340,12 @@
         </div>
       </section>
 
-      <!-- TAB 2: PROFILI DUALSENSE EDGE V2.0 -->
+      <!-- TAB 2: PROFILI DUALSENSE EDGE -->
       <section id="tab-profiles" class="tab-pane">
         <div class="profiles-container">
           <div class="profiles-sidebar">
             <div class="sidebar-header">
-              <h2>Profili Salvati V2</h2>
+              <h2>Profili Salvati</h2>
               <button class="btn-primary" onclick="createNewProfile()">+ Nuovo Profilo</button>
             </div>
             <div class="profiles-list" id="profilesList"></div>
@@ -358,7 +359,7 @@
               <button class="btn-success" onclick="saveCurrentProfile()">Salva Modifiche</button>
             </div>
             <div class="editor-section">
-              <h3>Curve di Sensibilità (V2 Rendering Matematico)</h3>
+              <h3>Curve di Sensibilità (Rendering Matematico)</h3>
               <p class="help-text">Seleziona la curva di risposta desiderata tra quelle ufficiali DualSense Edge:</p>
               <div class="curve-selector">
                 <button class="curve-btn active" data-curve="Linear" onclick="selectCurve('Linear')">Predefinito (Lineare)</button>
@@ -378,22 +379,22 @@
             </div>
             <div class="editor-grid">
               <div class="editor-card">
-                <h4>Zona Morta Levette V2</h4>
+                <h4>Zona Morta Levette</h4>
                 <div class="slider-row"><label>Zona morta interna:</label><input type="range" id="stickDeadzoneSlider" min="0" max="25" value="2" oninput="updateProfileSliders()"><span id="stickDeadzoneVal">2%</span></div>
                 <div class="slider-row"><label>Anti-Deadzone:</label><input type="range" id="stickAntiDeadzoneSlider" min="0" max="20" value="0" oninput="updateProfileSliders()"><span id="stickAntiDeadzoneVal">0%</span></div>
               </div>
               <div class="editor-card">
-                <h4>Grilletti Adattivi V2</h4>
+                <h4>Grilletti Adattivi</h4>
                 <div class="slider-row"><label>L2 Corsa:</label><input type="range" id="l2ThresholdSlider" min="5" max="100" value="100" oninput="updateProfileSliders()"><span id="l2ThresholdVal">100%</span></div>
                 <div class="slider-row"><label>R2 Corsa:</label><input type="range" id="r2ThresholdSlider" min="5" max="100" value="100" oninput="updateProfileSliders()"><span id="r2ThresholdVal">100%</span></div>
               </div>
               <div class="editor-card">
-                <h4>Rimappatura Tasti Posteriori (Edge Paddles V2)</h4>
+                <h4>Rimappatura Tasti Posteriori (Edge Paddles)</h4>
                 <div class="select-row"><label>Pulsante Sinistro (LB):</label><select id="mapBackLeft" onchange="updateProfileSliders()"><option value="cross">Croce (✕)</option><option value="circle">Cerchio (◯)</option><option value="square">Quadrato (▢)</option><option value="triangle">Triangolo (△)</option><option value="l1">L1</option><option value="r1">R1</option><option value="l3">L3</option><option value="r3">R3</option></select></div>
                 <div class="select-row"><label>Pulsante Destro (RB):</label><select id="mapBackRight" onchange="updateProfileSliders()"><option value="square">Quadrato (▢)</option><option value="cross">Croce (✕)</option><option value="circle">Cerchio (◯)</option><option value="triangle">Triangolo (△)</option><option value="l1">L1</option><option value="r1">R1</option><option value="l3">L3</option><option value="r3">R3</option></select></div>
               </div>
               <div class="editor-card">
-                <h4>Intensità Feedback & Grilletti V2</h4>
+                <h4>Intensità Feedback & Grilletti</h4>
                 <div class="slider-row"><label>Vibrazione Aptica:</label><input type="range" id="vibIntensitySlider" min="0" max="100" step="25" value="100" oninput="updateProfileSliders()"><span id="vibIntensityVal">100%</span></div>
                 <div class="slider-row"><label>Resistenza Grilletti:</label><input type="range" id="trigIntensitySlider" min="0" max="100" step="25" value="100" oninput="updateProfileSliders()"><span id="trigIntensityVal">100%</span></div>
               </div>
@@ -402,11 +403,11 @@
         </div>
       </section>
 
-      <!-- TAB 3: SLOT ASSEGNAZIONE V2 -->
+      <!-- TAB 3: SLOT ASSEGNAZIONE -->
       <section id="tab-slots" class="tab-pane">
         <div class="slots-container">
           <div class="section-intro">
-            <h2>Assegnazione Slot Profilo DualSense Edge V2</h2>
+            <h2>Assegnazione Slot Profilo DualSense Edge</h2>
             <p>I profili assegnati a questi slot possono essere attivati istantaneamente sul controller premendo il tasto Funzione (Fn) insieme al tasto corrispondente.</p>
           </div>
           <div class="slots-grid">
@@ -418,11 +419,11 @@
         </div>
       </section>
 
-      <!-- TAB 4: LIGHTBAR & LED V2 -->
+      <!-- TAB 4: LIGHTBAR & LED -->
       <section id="tab-lightbar" class="tab-pane">
         <div class="lightbar-container">
           <div class="card">
-            <h2>Personalizzazione Barra Luminosa (RGB V2)</h2>
+            <h2>Personalizzazione Barra Luminosa (RGB)</h2>
             <p class="help-text">Invia il colore direttamente alla barra LED hardware del controller collegato.</p>
             <div class="color-picker-box">
               <input type="color" id="lightbarColorInput" value="#0070d1" onchange="applyCustomColor(this.value)">
@@ -440,7 +441,7 @@
             </div>
           </div>
           <div class="card">
-            <h2>Indicatori LED Giocatore Fisici V2</h2>
+            <h2>Indicatori LED Giocatore Fisici</h2>
             <p class="help-text">I 5 piccoli LED bianchi fisici posizionati sotto il touchpad.</p>
             <div class="player-led-selector">
               <button class="btn-action active" onclick="setPlayerLed(1)">Giocatore 1 (LED centrale)</button>
@@ -452,20 +453,23 @@
         </div>
       </section>
 
-      <!-- TAB 5: DIAGNOSTICA V2 -->
+      <!-- TAB 5: DIAGNOSTICA V3 -->
       <section id="tab-firmware" class="tab-pane">
         <div class="card info-card">
-          <h2>Informazioni Periferica Hardware & Connessione V2</h2>
+          <h2>Informazioni Periferica Hardware & Connessione V3</h2>
           <div class="info-grid">
             <div class="info-item"><span class="info-label">Stato Connessione</span><span class="info-value" id="diagConnStatus">In attesa...</span></div>
             <div class="info-item"><span class="info-label">Dispositivo Rilevato</span><span class="info-value" id="diagModel">Nessun controller</span></div>
             <div class="info-item"><span class="info-label">Vendor ID (Sony)</span><span class="info-value">0x054C</span></div>
             <div class="info-item"><span class="info-label">Product ID (PID)</span><span class="info-value" id="diagPid">--</span></div>
-            <div class="info-item"><span class="info-label">Interfaccia</span><span class="info-value">Windows SetupAPI / HID Class Direct (V2)</span></div>
+            <div class="info-item"><span class="info-label">Sistema Operativo</span><span class="info-value" id="diagOs">--</span></div>
+            <div class="info-item"><span class="info-label">Interfaccia HID</span><span class="info-value" id="diagBackend">--</span></div>
+            <div class="info-item"><span class="info-label">Flusso Dati</span><span class="info-value" id="diagDataFlow">--</span></div>
+            <div class="info-item"><span class="info-label">Versione Applicazione</span><span class="info-value" id="diagVersion">--</span></div>
             <div class="info-item"><span class="info-label">Integrità CMAC</span><span class="info-value text-success">Verificata / Ufficiale</span></div>
           </div>
           <div class="oss-banner">
-            <h3>Comunicazione Hardware Pura al 100% V2</h3>
+            <h3>Comunicazione Hardware Pura al 100%</h3>
             <p>Questo programma comunica direttamente con il controller PlayStation attraverso report HID nativi. Nessun driver virtuale, nessun server cloud, nessuna telemetria e nessun input fittizio.</p>
           </div>
         </div>
