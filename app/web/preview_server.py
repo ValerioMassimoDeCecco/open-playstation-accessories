@@ -1,32 +1,30 @@
-import http.server
+"""
+Development preview launcher.
+
+Serves the real application (web UI + REST API + HID supervisor) on 0.0.0.0 so it
+can be opened from another device or from a hosted preview environment.
+
+Usage:
+    python app/web/preview_server.py [porta]
+"""
+
 import os
 import sys
 
-# Setup mock objects for the server to start without hardware
-class MockControllerManager:
-    def get_status(self): return {"connected": False, "model": "DualSense Edge V2"}
-    def get_inputs(self): return {}
-    def set_lightbar(self, r, g, b): pass
-    def set_rumble(self, l, r, d): pass
-    def set_player_led(self, n): pass
+CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
+PROJECT_ROOT = os.path.dirname(os.path.dirname(CURRENT_DIR))
+if PROJECT_ROOT not in sys.path:
+    sys.path.insert(0, PROJECT_ROOT)
 
-class MockProfileManager:
-    def __init__(self):
-        self.slots = {"slot_1": None, "slot_2": None, "slot_3": None, "slot_4": None}
-        self.active_slot = None
-    def get_all_profiles(self): return []
-    def save_profile(self, data): return data
-    def delete_profile(self, pid): return True
-    def assign_slot(self, slot, pid): return True
-    def set_active_slot(self, slot): return None
+from app.main import main  # noqa: E402
 
-# Import the handler and server creation logic
-sys.path.append(os.path.dirname(__file__))
-from server import create_server
 
-# Start server on 0.0.0.0:8080
 if __name__ == "__main__":
-    static_dir = os.path.join(os.path.dirname(__file__), "static")
-    server = create_server("0.0.0.0", 8080, MockControllerManager(), MockProfileManager(), static_dir)
-    print("Starting Preview Server V2.0 on port 8080...")
-    server.serve_forever()
+    port = 8080
+    if len(sys.argv) > 1:
+        try:
+            port = int(sys.argv[1])
+        except ValueError:
+            port = 8080
+    port = int(os.environ.get("PORT", port))
+    sys.exit(main(["--host", "0.0.0.0", "--port", str(port), "--no-browser"]))

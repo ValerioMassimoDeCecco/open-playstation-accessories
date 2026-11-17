@@ -3,11 +3,28 @@ __pycache__/
 *.py[cod]
 *$py.class
 
+# Virtual environments
+.venv/
+venv/
+env/
+
 # Windows
 Thumbs.db
 ehthumbs.db
 Desktop.ini
 
-# Logs and local artifacts
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+._*
+
+# Logs & local artifacts
 *.log
+*.tmp
+profiles.json.tmp
 .system_generated/
+
+# Editors
+.vscode/
+.idea/

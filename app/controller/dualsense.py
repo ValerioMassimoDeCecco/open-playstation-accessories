@@ -8,8 +8,8 @@ import binascii
 import struct
 import threading
 import time
-from typing import Optional, Dict, Any, Callable
-from .hid_windows import WindowsHIDDevice
+from typing import Optional, Dict, Any
+from .hid_base import create_hid_device
 
 
 def compute_crc32(data: bytes) -> int:
@@ -29,7 +29,9 @@ class DualSenseController:
         self.is_edge = device_info.get("is_edge", False)
         self.is_bluetooth = device_info.get("is_bluetooth", False)
 
-        self.hid = WindowsHIDDevice(
+        # The factory picks the right backend: SetupAPI on Windows,
+        # IOKit/IOHIDManager on macOS, hidraw on Linux.
+        self.hid = create_hid_device(
             self.path,
             device_info["vid"],
             device_info["pid"],
@@ -97,6 +99,9 @@ class DualSenseController:
             }
         }
 
+        self.received_reports = 0
+        self.last_report_time = 0.0
+
         self._target_lightbar = (0, 112, 240)
         self._target_rumble = (0, 0)
         self._target_player_led = 0x04 # Player 1 (center)
@@ -111,6 +116,20 @@ class DualSenseController:
         self.state["connected"] = True
         self._thread = threading.Thread(target=self._poll_loop, daemon=True)
         self._thread.start()
+
+        # Some backends (macOS) can only confirm the interface once real reports
+        # start flowing; a silent interface usually means the wrong HID
+        # interface or a missing system permission.
+        waiter = getattr(self.hid, "wait_for_first_report", None)
+        if callable(waiter):
+            try:
+                if not waiter(2.0):
+                    print(
+                        "[Hardware] Nessun dato ricevuto dall'interfaccia HID "
+                        "(possibile permesso 'Monitoraggio input' mancante su macOS)."
+                    )
+            except Exception:
+                pass
 
         # Set default PlayStation blue lightbar on connection
         self.set_lightbar(*self._target_lightbar)
@@ -131,7 +150,11 @@ class DualSenseController:
             max(0, min(255, int(g))),
             max(0, min(255, int(b)))
         )
-        self.state["lightbar"] = {"r": r, "g": g, "b": b}
+        self.state["lightbar"] = {
+            "r": self._target_lightbar[0],
+            "g": self._target_lightbar[1],
+            "b": self._target_lightbar[2],
+        }
         self._send_output_report()
 
     def set_rumble(self, left: int, right: int, duration_sec: float = 0.0):
@@ -159,17 +182,22 @@ class DualSenseController:
 
     def _poll_loop(self):
         """Real-time physical polling loop."""
-        failed_count = 0
-
+        last_packet = time.time()
         while self._running:
-            report = self.hid.read_input_report()
+            try:
+                report = self.hid.read_input_report()
+            except Exception:
+                report = None
+
             if report:
-                failed_count = 0
+                last_packet = time.time()
+                self.last_report_time = last_packet
+                self.received_reports += 1
                 self._parse_input_report(report)
             else:
-                failed_count += 1
-                if failed_count > 40:
-                    # Device disconnected or error
+                # Non blocking on every platform: a silent interface for a few
+                # seconds means the controller was unplugged / powered off.
+                if time.time() - last_packet > 5.0:
                     self.state["connected"] = False
                     break
                 time.sleep(0.005)
@@ -320,7 +348,7 @@ class DualSenseController:
 
             crc = compute_crc32(bytes([0xA2]) + bytes(report[:74]))
             struct.pack_into("<I", report, 74, crc)
-            self.hid.write_output_report(bytes(report))
+            self._safe_write(bytes(report))
         else:
             # USB Report 0x02 (48 bytes)
             report = bytearray(48)
@@ -334,4 +362,11 @@ class DualSenseController:
             report[44] = r
             report[45] = g
             report[46] = b
-            self.hid.write_output_report(bytes(report))
+            self._safe_write(bytes(report))
+
+    def _safe_write(self, report: bytes) -> bool:
+        """Sends an output report without ever raising into the web layer."""
+        try:
+            return bool(self.hid.write_output_report(report))
+        except Exception:
+            return False

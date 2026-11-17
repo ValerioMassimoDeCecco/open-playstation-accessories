@@ -68,8 +68,31 @@ function updateStatusUI(data) {
   const diagPid = document.getElementById("diagPid");
   const diagConnStatus = document.getElementById("diagConnStatus");
   const disconnectedBanner = document.getElementById("disconnectedBanner");
+  const diagOs = document.getElementById("diagOs");
+  const diagBackend = document.getElementById("diagBackend");
+  const diagDataFlow = document.getElementById("diagDataFlow");
+  const diagVersion = document.getElementById("diagVersion");
 
   isHardwareConnected = data.connected || false;
+
+  // Platform / backend info (Windows, macOS, Linux...)
+  const platform = data.platform || {};
+  if (diagOs) diagOs.textContent = platform.os || "--";
+  if (diagBackend) diagBackend.textContent = platform.backend || "--";
+  if (diagVersion) diagVersion.textContent = platform.version ? `V${platform.version}` : "--";
+  if (diagDataFlow) {
+    if (!platform.supported) {
+      diagDataFlow.textContent = "Backend non disponibile";
+      diagDataFlow.className = "info-value";
+    } else if (isHardwareConnected) {
+      const flowing = data.data_flowing !== false;
+      diagDataFlow.textContent = flowing ? "Attivo (report HID)" : "In attesa di report...";
+      diagDataFlow.className = flowing ? "info-value text-success" : "info-value";
+    } else {
+      diagDataFlow.textContent = "Nessun dato";
+      diagDataFlow.className = "info-value";
+    }
+  }
 
   if (isHardwareConnected) {
     disconnectedBanner.style.display = "none";
@@ -129,15 +152,19 @@ function updateStatusUI(data) {
    Real-Time Hardware Input Polling
    ========================================================================== */
 function startInputPolling() {
-  const poll = async () => {
-    try {
-      const res = await fetch("/api/inputs");
-      if (res.ok) {
-        const data = await res.json();
-        renderInputs(data);
+  let lastFrame = 0;
+  const poll = async (timestamp) => {
+    if (timestamp - lastFrame >= 33) { // ~30 fps is plenty for a hardware tester
+      lastFrame = timestamp;
+      try {
+        const res = await fetch("/api/inputs");
+        if (res.ok) {
+          const data = await res.json();
+          renderInputs(data);
+        }
+      } catch (e) {
+        // ignore transient drops
       }
-    } catch (e) {
-      // ignore transient drops
     }
     requestAnimationFrame(poll);
   };
